@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "TimeWinder Operations Hub",
+        "description": "Log ind med din CrewNet-email. Du får en 6-cifret kode på SMS i næste trin. Kontoen skal have rollen Drift-koordinator for at se command-center- og analytics-data.",
+        "data": {
+          "base_url": "Hub-adresse",
+          "email": "CrewNet-email"
+        }
+      },
+      "otp": {
+        "title": "Indtast SMS-kode",
+        "description": "Indtast den 6-cifrede kode sendt til telefonen for {email}.",
+        "data": {
+          "code": "SMS-kode"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Forny login",
+        "description": "Dit token er udløbet. Vi har sendt en ny SMS-kode for {email}. Indtast den for at forny adgangen.",
+        "data": {
+          "code": "SMS-kode"
+        }
+      }
+    },
+    "error": {
+      "request_failed": "Kunne ikke sende kode. Tjek emailen og at kontoen findes i CrewNet.",
+      "invalid_code": "Forkert eller udløbet kode."
+    },
+    "abort": {
+      "already_configured": "Denne konto er allerede tilføjet.",
+      "reauth_successful": "Login fornyet."
+    }
+  }
+}
