@@ -24,7 +24,7 @@ on dashboards and build automations on.
 
 The Hub issues a **30-day token** via SMS OTP — there is no silent refresh. The config flow:
 
-1. You enter the **Hub URL** (default `https://drift.timewinder.dk`) and your **CrewNet email**.
+1. You enter the **API URL** (default `https://tw-opshub-func.azurewebsites.net` — the Azure Functions host, **not** the `drift.timewinder.dk` SPA) and your **CrewNet email**.
 2. The Hub sends a 6-digit code by SMS.
 3. You enter the code → a 30-day token is stored in the config entry.
 

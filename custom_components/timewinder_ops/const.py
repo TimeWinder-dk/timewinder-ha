@@ -4,7 +4,9 @@ from __future__ import annotations
 
 DOMAIN = "timewinder_ops"
 
-DEFAULT_BASE_URL = "https://drift.timewinder.dk"
+# The API lives on the Azure Functions host, NOT the SPA frontend (drift.timewinder.dk
+# is static-only — POSTing there returns 405). See frontend/.env.production.
+DEFAULT_BASE_URL = "https://tw-opshub-func.azurewebsites.net"
 
 CONF_BASE_URL = "base_url"
 CONF_EMAIL = "email"
