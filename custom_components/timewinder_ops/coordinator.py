@@ -61,6 +61,10 @@ class TimeWinderCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "command": await self._safe_get("/api/command-center"),
             "incidents": await self._safe_get("/api/incidents?filter=team"),
             "live": await self._safe_get("/api/analytics/live"),
+            # Role-gated endpoints — degrade to None (403) instead of failing the update.
+            "overview": await self._safe_get("/api/analytics/overview"),
+            "delivery": await self._safe_get("/api/delivery-overview"),
+            "bar_orders": await self._safe_get("/api/bar-orders"),
         }
 
     async def _safe_get(self, path: str) -> Any:

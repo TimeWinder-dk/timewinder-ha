@@ -28,6 +28,45 @@ def _dig(data: dict[str, Any], section: str, *keys: str) -> Any:
     return cur
 
 
+def _cmd(data: dict[str, Any]) -> dict[str, Any] | None:
+    """The command-center payload, or None when the account can't see it (403)."""
+    cmd = data.get("command")
+    return cmd if isinstance(cmd, dict) else None
+
+
+def _team_count(data: dict[str, Any]) -> int | None:
+    cmd = _cmd(data)
+    return None if cmd is None else len(cmd.get("teamLoad") or [])
+
+
+def _need_help(data: dict[str, Any]) -> int | None:
+    cmd = _cmd(data)
+    if cmd is None:
+        return None
+    return sum(
+        int((t.get("counts") or {}).get("NeedHelp", 0) or 0)
+        for t in (cmd.get("availabilityByTeam") or [])
+    )
+
+
+def _top_points_count(data: dict[str, Any]) -> int | None:
+    cmd = _cmd(data)
+    return None if cmd is None else len(cmd.get("topPoints") or [])
+
+
+def _delivery_count(data: dict[str, Any]) -> int | None:
+    dv = data.get("delivery")
+    if not isinstance(dv, dict):
+        return None
+    rows = dv.get("rows")
+    return len(rows) if isinstance(rows, list) else 0
+
+
+def _bar_orders_count(data: dict[str, Any]) -> int | None:
+    bo = data.get("bar_orders")
+    return len(bo) if isinstance(bo, list) else None
+
+
 @dataclass(frozen=True, kw_only=True)
 class TWSensorDescription(SensorEntityDescription):
     """Sensor description with value + optional attribute extractors."""
@@ -75,6 +114,84 @@ SENSORS: tuple[TWSensorDescription, ...] = (
         icon="mdi:format-list-bulleted",
         value_fn=lambda d: len(d.get("incidents") or []),
         attr_fn=lambda d: {"items": (d.get("incidents") or [])[:25]},
+    ),
+    # ── From the command-center payload we already fetch (no extra API call) ──
+    TWSensorDescription(
+        key="need_help",
+        name="Brug for hjælp",
+        icon="mdi:hand-heart",
+        value_fn=_need_help,
+        attr_fn=lambda d: {"teams": (_cmd(d) or {}).get("availabilityByTeam") or []}
+        if _cmd(d) is not None
+        else None,
+    ),
+    TWSensorDescription(
+        key="team_load",
+        name="Team-load",
+        icon="mdi:account-group",
+        value_fn=_team_count,
+        attr_fn=lambda d: {"teams": (_cmd(d) or {}).get("teamLoad") or []}
+        if _cmd(d) is not None
+        else None,
+    ),
+    TWSensorDescription(
+        key="top_points",
+        name="Top-punkter",
+        icon="mdi:map-marker-alert",
+        value_fn=_top_points_count,
+        attr_fn=lambda d: {"points": (_cmd(d) or {}).get("topPoints") or []}
+        if _cmd(d) is not None
+        else None,
+    ),
+    TWSensorDescription(
+        key="response_ack",
+        name="Svartid (ack)",
+        icon="mdi:timer-outline",
+        native_unit_of_measurement="min",
+        value_fn=lambda d: _dig(d, "command", "responseTimes", "toAckMinutes"),
+        attr_fn=lambda d: _dig(d, "command", "responseTimes") or None,
+    ),
+    # ── analytics/overview (one extra call; Coordinator role) ──
+    TWSensorDescription(
+        key="sessions",
+        name="Sessioner",
+        icon="mdi:chart-line",
+        value_fn=lambda d: _dig(d, "overview", "totals", "sessions"),
+        attr_fn=lambda d: {
+            "users": _dig(d, "overview", "totals", "users"),
+            "pageViews": _dig(d, "overview", "totals", "pageViews"),
+            "events": _dig(d, "overview", "totals", "events"),
+            "days": _dig(d, "overview", "days"),
+            "series": _dig(d, "overview", "series") or [],
+        }
+        if isinstance(d.get("overview"), dict)
+        else None,
+    ),
+    # ── delivery-overview (Varegaard/Sekretariat role) ──
+    TWSensorDescription(
+        key="delivery",
+        name="Levering",
+        icon="mdi:truck-delivery",
+        value_fn=_delivery_count,
+        attr_fn=lambda d: {
+            "from": (d.get("delivery") or {}).get("from"),
+            "to": (d.get("delivery") or {}).get("to"),
+            "salesAvailable": (d.get("delivery") or {}).get("salesAvailable"),
+            "warnings": (d.get("delivery") or {}).get("warnings") or [],
+            "rows": ((d.get("delivery") or {}).get("rows") or [])[:50],
+        }
+        if isinstance(d.get("delivery"), dict)
+        else None,
+    ),
+    # ── bar-orders (fulfiller role) ──
+    TWSensorDescription(
+        key="bar_orders",
+        name="Bar-ordrer",
+        icon="mdi:glass-mug-variant",
+        value_fn=_bar_orders_count,
+        attr_fn=lambda d: {"items": (d.get("bar_orders") or [])[:25]}
+        if isinstance(d.get("bar_orders"), list)
+        else None,
     ),
 )
 

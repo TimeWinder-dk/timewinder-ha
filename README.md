@@ -15,6 +15,13 @@ on dashboards and build automations on.
 | `sensor.*_sms_fejlet` | `command-center` `sms.failed` | Failed SMS in the window |
 | `sensor.*_brugere_online` | `/api/analytics/live` `users` | Users online now |
 | `sensor.*_sagsliste` | `/api/incidents?filter=team` | State = count, attribute `items` = up to 25 incidents |
+| `sensor.*_brug_for_hjaelp` | `command-center` `availabilityByTeam` | Sum of NeedHelp across teams; attribute `teams` = per-team availability counts/members |
+| `sensor.*_team_load` | `command-center` `teamLoad` | Number of teams; attribute `teams` = open/unassigned/criticalHigh per team |
+| `sensor.*_top_punkter` | `command-center` `topPoints` | Count; attribute `points` = busiest reporting points |
+| `sensor.*_svartid_ack` | `command-center` `responseTimes` | Avg minutes to first engagement; attributes include resolve time + per-priority |
+| `sensor.*_sessioner` | `/api/analytics/overview` | Total sessions in the window; attributes `users`, `pageViews`, `events`, `series`, `days` |
+| `sensor.*_levering` | `/api/delivery-overview` | Row count; attribute `rows` = delivered vs sold per bar/product (Varegaard/Sekretariat) |
+| `sensor.*_bar_ordrer` | `/api/bar-orders` | Open order count; attribute `items` = orders (fulfiller role) |
 
 > The command-center and analytics sensors require the signed-in account to have the
 > **Drift Coordinator** role. Without it those endpoints return 403 and the sensors stay
