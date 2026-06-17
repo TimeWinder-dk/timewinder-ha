@@ -6,7 +6,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+    SensorStateClass,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType
@@ -148,6 +153,8 @@ SENSORS: tuple[TWSensorDescription, ...] = (
         name="Svartid (ack)",
         icon="mdi:timer-outline",
         native_unit_of_measurement="min",
+        device_class=SensorDeviceClass.DURATION,
+        state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda d: _dig(d, "command", "responseTimes", "toAckMinutes"),
         attr_fn=lambda d: _dig(d, "command", "responseTimes") or None,
     ),
