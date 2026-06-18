@@ -19,7 +19,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, ENTITY_ID_PREFIX
 from .coordinator import TimeWinderCoordinator
 
 
@@ -230,6 +230,9 @@ class TimeWinderSensor(CoordinatorEntity[TimeWinderCoordinator], SensorEntity):
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
+        # Deterministic id (e.g. sensor.timewinder_operations_hub_open_total) — used as the
+        # suggested object_id on first registration, regardless of device-name slugging.
+        self.entity_id = f"sensor.{ENTITY_ID_PREFIX}_{description.key}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name="TimeWinder Operations Hub",

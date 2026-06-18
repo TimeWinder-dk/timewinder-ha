@@ -15,3 +15,8 @@ CONF_EXPIRY = "expiry"
 
 # The Operations Hub data is minute-fresh; polling every 60s is plenty.
 UPDATE_INTERVAL_SECONDS = 60
+
+# Stable, deterministic entity_id namespace. We set entity_id explicitly (instead of
+# relying on device-name auto-generation, which produced an inconsistent doubled prefix
+# on a hot reload) so ids are predictable and independent of locale/device naming.
+ENTITY_ID_PREFIX = "timewinder_operations_hub"

@@ -9,23 +9,25 @@ on dashboards and build automations on.
 
 | Entity | Source | Notes |
 | ------ | ------ | ----- |
-| `sensor.*_abne_sager` | `/api/command-center` `open.total` | Attributes: `unassigned`, `critical`, `high`, `blocked` |
-| `sensor.*_nye_sager` | `command-center` `newInWindow` | New incidents in the window |
-| `sensor.*_abne_eskaleringer` | `command-center` `escalations.openFollowUps` | Attribute `items` = open follow-ups |
-| `sensor.*_sms_fejlet` | `command-center` `sms.failed` | Failed SMS in the window |
-| `sensor.*_brugere_online` | `/api/analytics/live` `users` | Users online now |
-| `sensor.*_sagsliste` | `/api/incidents?filter=team` | State = count, attribute `items` = up to 25 incidents |
-| `sensor.*_brug_for_hjaelp` | `command-center` `availabilityByTeam` | Sum of NeedHelp across teams; attribute `teams` = per-team availability counts/members |
-| `sensor.*_team_load` | `command-center` `teamLoad` | Number of teams; attribute `teams` = open/unassigned/criticalHigh per team |
-| `sensor.*_top_punkter` | `command-center` `topPoints` | Count; attribute `points` = busiest reporting points |
-| `sensor.*_svartid_ack` | `command-center` `responseTimes` | Avg minutes to first engagement; attributes include resolve time + per-priority |
-| `sensor.*_sessioner` | `/api/analytics/overview` | Total sessions in the window; attributes `users`, `pageViews`, `events`, `series`, `days` |
-| `sensor.*_levering` | `/api/delivery-overview` | Row count; attribute `rows` = delivered vs sold per bar/product (Varegaard/Sekretariat) |
-| `sensor.*_bar_ordrer` | `/api/bar-orders` | Open order count; attribute `items` = orders (fulfiller role) |
+| `sensor.timewinder_operations_hub_open_total` | `/api/command-center` `open.total` | Attributes: `unassigned`, `critical`, `high`, `blocked` |
+| `sensor.timewinder_operations_hub_new_in_window` | `command-center` `newInWindow` | New incidents in the window |
+| `sensor.timewinder_operations_hub_open_followups` | `command-center` `escalations.openFollowUps` | Attribute `items` = open follow-ups |
+| `sensor.timewinder_operations_hub_sms_failed` | `command-center` `sms.failed` | Failed SMS in the window |
+| `sensor.timewinder_operations_hub_users_online` | `/api/analytics/live` `users` | Users online now |
+| `sensor.timewinder_operations_hub_incidents` | `/api/incidents?filter=team` | State = count, attribute `items` = up to 25 incidents |
+| `sensor.timewinder_operations_hub_need_help` | `command-center` `availabilityByTeam` | Sum of NeedHelp across teams; attribute `teams` = per-team availability counts/members |
+| `sensor.timewinder_operations_hub_team_load` | `command-center` `teamLoad` | Number of teams; attribute `teams` = open/unassigned/criticalHigh per team |
+| `sensor.timewinder_operations_hub_top_points` | `command-center` `topPoints` | Count; attribute `points` = busiest reporting points |
+| `sensor.timewinder_operations_hub_response_ack` | `command-center` `responseTimes` | Avg minutes to first engagement (duration); attributes include resolve time + per-priority |
+| `sensor.timewinder_operations_hub_sessions` | `/api/analytics/overview` | Total sessions in the window; attributes `users`, `pageViews`, `events`, `series`, `days` |
+| `sensor.timewinder_operations_hub_delivery` | `/api/delivery-overview` | Row count; attribute `rows` = delivered vs sold per bar/product (Varegaard/Sekretariat) |
+| `sensor.timewinder_operations_hub_bar_orders` | `/api/bar-orders` | Open order count; attribute `items` = orders (fulfiller role) |
+
+Entity ids are stable and locale-independent (`sensor.timewinder_operations_hub_<key>`), set explicitly by the integration since v0.2.2.
 
 > The command-center and analytics sensors require the signed-in account to have the
 > **Drift Coordinator** role. Without it those endpoints return 403 and the sensors stay
-> empty — but `sensor.*_sagsliste` (team-scoped) still works for team leads.
+> empty — but `sensor.timewinder_operations_hub_incidents` (team-scoped) still works for team leads.
 
 ## Authentication
 
