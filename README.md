@@ -18,7 +18,7 @@ on dashboards and build automations on.
 | `sensor.timewinder_operations_hub_need_help` | `command-center` `availabilityByTeam` | Sum of NeedHelp across teams; attribute `teams` = per-team availability counts/members |
 | `sensor.timewinder_operations_hub_team_load` | `command-center` `teamLoad` | Number of teams; attribute `teams` = open/unassigned/criticalHigh per team |
 | `sensor.timewinder_operations_hub_top_points` | `command-center` `topPoints` | Count; attribute `points` = busiest reporting points |
-| `sensor.timewinder_operations_hub_response_ack` | `command-center` `responseTimes` | Avg minutes to first engagement (duration); attributes include resolve time + per-priority |
+| `sensor.timewinder_operations_hub_response_ack` | `command-center` `responseTimes` | Browser network response time in ms; attributes include load time, p95 and sample size |
 | `sensor.timewinder_operations_hub_sessions` | `/api/analytics/overview` | Total sessions in the window; attributes `users`, `pageViews`, `events`, `series`, `days` |
 | `sensor.timewinder_operations_hub_delivery` | `/api/delivery-overview` | Row count; attribute `rows` = delivered vs sold per bar/product (Varegaard/Sekretariat) |
 | `sensor.timewinder_operations_hub_bar_orders` | `/api/bar-orders` | Open order count; attribute `items` = orders (fulfiller role) |
@@ -57,10 +57,11 @@ Copy `custom_components/timewinder_ops` into your HA `config/custom_components/`
 type: entities
 title: TimeWinder Drift
 entities:
-  - sensor.timewinder_abne_sager
-  - sensor.timewinder_abne_eskaleringer
-  - sensor.timewinder_sms_fejlet
-  - sensor.timewinder_brugere_online
+  - sensor.timewinder_operations_hub_open_total
+  - sensor.timewinder_operations_hub_open_followups
+  - sensor.timewinder_operations_hub_sms_failed
+  - sensor.timewinder_operations_hub_users_online
+  - sensor.timewinder_operations_hub_response_ack
 ```
 
 ## License

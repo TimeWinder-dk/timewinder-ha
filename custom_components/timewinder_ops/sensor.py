@@ -13,6 +13,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import DeviceInfo
@@ -70,6 +71,11 @@ def _delivery_count(data: dict[str, Any]) -> int | None:
 def _bar_orders_count(data: dict[str, Any]) -> int | None:
     bo = data.get("bar_orders")
     return len(bo) if isinstance(bo, list) else None
+
+
+def _browser_response_ms(data: dict[str, Any]) -> float | int | None:
+    """Average browser network response time from command-center performance metrics."""
+    return _dig(data, "command", "responseTimes", "avgNetworkMs")
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -150,12 +156,12 @@ SENSORS: tuple[TWSensorDescription, ...] = (
     ),
     TWSensorDescription(
         key="response_ack",
-        name="Svartid (ack)",
+        name="Browser-svartid",
         icon="mdi:timer-outline",
-        native_unit_of_measurement="min",
+        native_unit_of_measurement=UnitOfTime.MILLISECONDS,
         device_class=SensorDeviceClass.DURATION,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda d: _dig(d, "command", "responseTimes", "toAckMinutes"),
+        value_fn=_browser_response_ms,
         attr_fn=lambda d: _dig(d, "command", "responseTimes") or None,
     ),
     # ── analytics/overview (one extra call; Coordinator role) ──
